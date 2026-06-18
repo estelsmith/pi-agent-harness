@@ -30,7 +30,7 @@ Assistant, you can configure it via an `acp.json` file.
 {
     "default_mcp_settings": {},
     "agent_servers": {
-        "pi-engage": {
+        "pi-myrepo": {
             "command": "path/to/repo/.pi/bin/pi-acp-bridge"
         }
     }
