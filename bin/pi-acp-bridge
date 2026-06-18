@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+###
+# Wrapper for pi-acp, allowing pi/safehouse wrapper to be used over ACP.
+# (!) ACP is used to connect Pi to JetBrains AI Assistant.
+# @see https://github.com/svkozak/pi-acp
+###
+
+SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
+source "${SOURCE_DIR}/.util/log.sh"
+
+# Define file paths for the ACP bridge and associated commands.
+export ACP_PI_DIR="${PWD}/.pi"
+export ACP_PI_BIN_DIR="${ACP_PI_DIR}/bin"
+export ACP_PI_AGENT_DIR="${ACP_PI_DIR}/agent"
+export ACP_PI_SESSION_DIR="${ACP_PI_AGENT_DIR}/sessions"
+
+export LOG_DIR="${ACP_PI_DIR}/logs"
+export LOG_CHANNEL="acp"
+LOG_GROUP="pi-acp-bridge"
+
+# Add the local bin directory to the PATH to ensure pi and safehouse wrappers can be used.
+# (!) pi-acp calls `pi` based on PATH, with no other way to specify path to the executable.
+export PATH="${ACP_PI_BIN_DIR}:${PATH}"
+
+# Configure logging for the session.
+log_config
+
+# Remove old Pi sessions (over 24h old) to make sure session log doesn't grow endlessly.
+log "Prune old sessions"
+if [[ -d "${ACP_PI_SESSION_DIR}" ]]; then
+    find "${ACP_PI_SESSION_DIR}" -mindepth 1 -maxdepth 1 -mmin +1440 -exec rm -rf {} + || log "WARN: Failed to prune old sessions: ${ACP_PI_SESSION_DIR}"
+fi
+
+log_exec pi-acp
