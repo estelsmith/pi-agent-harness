@@ -1,5 +1,7 @@
 # Pi Agent Harness
 
+[Random related notes](https://gist.github.com/estelsmith/d1b7dd789567a34ef63965bb292692f8)
+
 This directory contains the `pi` agent harness, designed to provide a robust environment for AI coding agents.
 
 ## Overview
