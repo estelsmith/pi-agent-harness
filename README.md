@@ -62,9 +62,7 @@ logs/                   # ACP session logs (gitignored)
   `pi-acp` can find the local `pi` wrapper, prunes stale sessions (>24 h), and starts the `pi-acp` ACP server.
 - **`bin/pi`** — Wraps the `pi` executable. Logs the active configuration, and launches `pi` inside
   the `agent-safehouse` sandbox.
-- **`agent/settings.json`** — Pi runtime settings. Currently installs the
-  [`@monroewilliams/pi-local`](https://github.com/monroewilliams/pi-local) extension and sets the default provider
-  and model.
+- **`agent/settings.json`** — Pi runtime settings. Installs extensions, and sets the default provider and model.
 - **`agent/auth.json`** — Stores local LLM connection credentials. Managed automatically
   by the `pi-local` extension.
 
