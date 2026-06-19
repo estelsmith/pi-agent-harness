@@ -21,6 +21,7 @@ The following tools must be installed and available before using this harness.
 | [`pi-acp`](https://github.com/svkozak/pi-acp) | ACP server that wraps `pi` | resolved via `PATH` |
 | [`safehouse`](https://agent-safehouse.dev/) | Sandbox that restricts filesystem access | `~/.homebrew/bin/safehouse` |
 | [`oMLX`](https://github.com/jundot/omlx) | High-performance local LLM inference (macOS) | `http://localhost:11434` |
+| [`context-mode`](https://github.com/mksglu/context-mode) | Advanced file analysis, indexing, and context management | resolved via `PATH` |
 
 You can override the default binary paths with environment variables:
 
@@ -28,6 +29,19 @@ You can override the default binary paths with environment variables:
 PI_BIN=/custom/path/to/pi          # overrides ~/npm/bin/pi
 SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
 ```
+
+---
+
+## Technologies Used
+
+This harness integrates several specialized tools to provide a robust environment for AI coding agents:
+
+- **[Pi](https://pi.dev/)** — The core agent runtime.
+- **[pi-acp](https://github.com/svkozak/pi-acp)** — An ACP server that wraps `pi`.
+- **[Safehouse](https://agent-safehouse.dev/)** — A sandbox that restricts filesystem and network access.
+- **[oMLX](https://github.com/jundot/omlx)** — High-performance local LLM inference (macOS).
+- **[pi-local](https://github.com/monroewilliams/pi-local)** — An extension for connecting Pi to oMLX via oMLX native APIs.
+- **[context-mode](https://github.com/mksglu/context-mode)** — An extension for advanced file analysis, indexing, and context management.
 
 ---
 
@@ -50,7 +64,7 @@ logs/                   # ACP session logs (gitignored)
 .gitignore
 ```
 
-### Key Components
+### Project Files
 
 - **`bin/pi-acp-bridge`** — The primary entry point. Configures environment variables, prepends `bin/` to `PATH` so
   `pi-acp` can find the local `pi` wrapper, prunes stale sessions (>24 h), and starts the `pi-acp` ACP server.
