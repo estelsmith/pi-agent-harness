@@ -42,7 +42,7 @@ SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
 │   └── .util/
 │       └── log.sh          # Shared logging utilities used by all bin scripts
 ├── agent/
-│   ├── auth.json           # Local LLM connection credentials (gitignored)
+│   ├── auth.json           # Local LLM connection credentials
 │   ├── settings.json       # Pi agent settings, installed extensions, default model
 │   ├── sessions/           # Per-session JSONL conversation logs (gitignored)
 │   └── npm/                # Locally installed Pi extensions (gitignored)
@@ -60,7 +60,7 @@ SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
 - **`agent/settings.json`** — Pi runtime settings. Currently installs the
   [`@monroewilliams/pi-local`](https://github.com/monroewilliams/pi-local) extension and sets the default provider
   and model.
-- **`agent/auth.json`** — Stores local LLM connection credentials (gitignored). Managed automatically
+- **`agent/auth.json`** — Stores local LLM connection credentials. Managed automatically
   by the `pi-local` extension.
 
 ---
@@ -157,4 +157,3 @@ The following paths are excluded from version control and must be set up locally
 | `logs/` | Runtime log files |
 | `agent/sessions/` | Per-session conversation history |
 | `agent/npm/` | Locally installed Pi extensions |
-| `agent/auth.json` | LLM credentials and cached model metadata |
