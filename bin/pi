@@ -18,7 +18,7 @@ export PI_CODING_AGENT_DIR="${ACP_PI_AGENT_DIR}"
 log "ENV: PI_CODING_AGENT_DIR="${PI_CODING_AGENT_DIR}""
 
 # (!) Add Pi-specific safehouse options here.
-# --env-pass="PI_CODING_AGENT_DIR" Force Pi to load config from our directory
+# --env-pass="PI_CODING_AGENT_DIR" Tells Pi to load its configuration from the agent harness directory
 # --add-dirs-ro="${HOME}/npm" Required to access pi executable in the first place
 log_exec safehouse \
     --env-pass="PI_CODING_AGENT_DIR" \
