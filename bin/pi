@@ -17,11 +17,17 @@ log "PWD: ${PWD}"
 export PI_CODING_AGENT_DIR="${ACP_PI_AGENT_DIR}"
 log "ENV: PI_CODING_AGENT_DIR="${PI_CODING_AGENT_DIR}""
 
+# We want context-mode to operate in our local directory instead of dirtying up the global database.
+export CONTEXT_MODE_DIR="${ACP_PI_DATA_DIR}/context-mode"
+log "ENV: CONTEXT_MODE_DIR="${CONTEXT_MODE_DIR}""
+
 # (!) Add Pi-specific safehouse options here.
 # --env-pass="PI_CODING_AGENT_DIR" Tells Pi to load its configuration from the agent harness directory
+# --env-pass="CONTEXT_MODE_DIR" Forward context-mode directory config so it knows where to store its database
 # --add-dirs-ro="${HOME}/npm" Required to access pi executable in the first place
 log_exec safehouse \
     --env-pass="PI_CODING_AGENT_DIR" \
+    --env-pass="CONTEXT_MODE_DIR" \
     --add-dirs-ro="${HOME}/npm" \
     "${PI_BIN}" \
     "$@"

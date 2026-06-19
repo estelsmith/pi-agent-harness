@@ -2,3 +2,6 @@
 /agent/bin/
 /agent/npm/
 /agent/sessions/
+
+# Agent-local data storage. Used for storing context-mode database, etc.
+/.data/
