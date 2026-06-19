@@ -7,33 +7,36 @@
 ###
 
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
+export APP_DIR="$(realpath ${SOURCE_DIR}/..)"
+
+# TODO Probably import the whole directory through a bootstrap file?
 source "${SOURCE_DIR}/.util/log.sh"
 
 # Define file paths for the ACP bridge and associated commands.
-export ACP_PI_DIR="$(realpath ${SOURCE_DIR}/..)"
-export ACP_PI_BIN_DIR="${ACP_PI_DIR}/bin"
-export ACP_PI_DATA_DIR="${ACP_PI_DIR}/.data"
-export ACP_PI_AGENT_DIR="${ACP_PI_DIR}/agent"
-export ACP_PI_SESSION_DIR="${ACP_PI_AGENT_DIR}/sessions"
+# (!) Used by pi to define context-mode directory
+export ACP_PI_DATA_DIR="${APP_DIR}/.data"
+# (!) Used by pi to define pi's PI_CODING_AGENT_DIR
+export ACP_PI_AGENT_DIR="${APP_DIR}/agent"
 
-export LOG_DIR="${ACP_PI_DIR}/logs"
-export LOG_CHANNEL="acp"
+# Configure logging for the session.
 LOG_GROUP="pi-acp-bridge"
+# (!) Export LOG_DIR and LOG_CHANNEL so child shells inherit logging configuration.
+export LOG_DIR="${APP_DIR}/logs"
+export LOG_CHANNEL="acp"
+log_config
 
 # Add the local bin directory to the PATH to ensure pi and safehouse wrappers can be used.
 # (!) pi-acp calls `pi` based on PATH, with no other way to specify path to the executable.
-export PATH="${ACP_PI_BIN_DIR}:${PATH}"
-
-# Configure logging for the session.
-log_config
+export PATH="${APP_DIR}/bin:${PATH}"
 
 # Remove old Pi sessions (over 24h old) to make sure session log doesn't grow endlessly.
 log "Prune old sessions"
+ACP_PI_SESSION_DIR="${ACP_PI_AGENT_DIR}/sessions"
 if [[ -d "${ACP_PI_SESSION_DIR}" ]]; then
     find "${ACP_PI_SESSION_DIR}" -mindepth 1 -maxdepth 1 -mmin +1440 -exec rm -rf {} + || log "WARN: Failed to prune old sessions: ${ACP_PI_SESSION_DIR}"
 fi
 
-export NODE_BIN_DIR="${ACP_PI_DIR}/node_modules/.bin"
+export NODE_BIN_DIR="${APP_DIR}/node_modules/.bin"
 
 # Prefix command with `mise exec` so nodejs gets pinned to mise-defined version.
 log_exec mise exec -- "${NODE_BIN_DIR}/pi-acp"
