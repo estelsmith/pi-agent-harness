@@ -18,14 +18,7 @@ The following tools must be installed and available before using this harness.
 | Tool | Purpose                                                          | Default location |
 |------|------------------------------------------------------------------|-----------------|
 | [`mise`](https://mise.en.dev/) | Manages local dependencies for `node`, `npm`, `pi`, and `pi-acp` | resolved via `PATH` |
-| [`safehouse`](https://agent-safehouse.dev/) | Sandbox that restricts filesystem access                         | `~/.homebrew/bin/safehouse` |
 | [`oMLX`](https://github.com/jundot/omlx) | High-performance local LLM inference (macOS)                     | `http://localhost:11434` |
-
-You can override the default binary paths with environment variables:
-
-```bash
-SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
-```
 
 ---
 
@@ -49,7 +42,8 @@ This harness integrates several specialized tools to provide a robust environmen
 bin/
 ├── pi                  # Wrapper: runs pi inside safehouse
 ├── pi-acp-bridge       # Entry point: starts the ACP server
-├── safehouse           # Wrapper: invokes the safehouse sandbox
+├── .vendor/            # Local vendor tools
+│   └── safehouse.sh    # Local copy of safehouse
 └── .util/
     └── log.sh          # Shared logging utilities used by all bin scripts
 agent/
@@ -68,7 +62,6 @@ logs/                   # ACP session logs (gitignored)
   `pi-acp` can find the local `pi` wrapper, prunes stale sessions (>24 h), and starts the `pi-acp` ACP server.
 - **`bin/pi`** — Wraps the `pi` executable. Logs the active configuration, and launches `pi` inside
   the `safehouse` sandbox.
-- **`bin/safehouse`** — Thin wrapper around the `safehouse` binary. Add any global sandbox options here.
 - **`agent/settings.json`** — Pi runtime settings. Currently installs the
   [`@monroewilliams/pi-local`](https://github.com/monroewilliams/pi-local) extension and sets the default provider
   and model.
@@ -79,20 +72,12 @@ logs/                   # ACP session logs (gitignored)
 
 ## Setup
 
-### 1. Configure the environment
-
-If you need to override the default binary paths for the harness, use the following environment variables:
-
-```bash
-SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
-```
-
-### 2. Start oMLX
+### 1. Start oMLX
 
 Launch oMLX and ensure it is listening on `http://localhost:11434`. The harness is pre-configured to use
 `gemma-4-26b-a4b-it-4bit` by default; you can change the model via the `/local-model` command inside Pi (see below).
 
-### 3. Configure the ACP client
+### 2. Configure the ACP client
 
 Point your ACP-compatible client at `bin/pi-acp-bridge`. For JetBrains AI Assistant, add an entry to
 `~/.jetbrains/acp.json`:
