@@ -50,15 +50,15 @@ log_dir() {
 
 ###
 # Return the log filename.
-# Example: "2026-06-18T12-18-49_app.log"
+# Example: "app_2026-06-18T12-18-49.log"
 ###
 log_file() {
-    echo "$(log_date_file)_$(log_channel).log"
+    echo "$(log_channel)_$(log_date_file).log"
 }
 
 ###
 # Return the full path to the logfile.
-# Example: "/path/to/logdir/2026-06-18T12-18-49_app.log"
+# Example: "/path/to/logdir/app_2026-06-18T12-18-49.log"
 ###
 log_path() {
     echo "$(log_dir)/$(log_file)"
@@ -71,9 +71,9 @@ log_config() {
     mkdir -p "$(log_dir)"
     
     # Keep only the 5 most recent log files per channel to prevent disk bloat.
-    # Since filenames are timestamped (e.g., 2026-06-18T12-18-49_acp.log), 
+    # Since filenames are timestamped (e.g., app_2026-06-18T12-18-49.log),
     # alphabetical sorting correctly orders them chronologically.
-    find "$(log_dir)" -maxdepth 1 -type f -name "*_$(log_channel).log" | \
+    find "$(log_dir)" -maxdepth 1 -type f -name "$(log_channel)_*.log" | \
         sort -r | \
         tail -n +6 | \
         xargs -I{} rm -f "{}" 2>/dev/null
