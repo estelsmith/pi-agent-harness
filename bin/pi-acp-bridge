@@ -10,7 +10,7 @@ SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
 source "${SOURCE_DIR}/.util/log.sh"
 
 # Define file paths for the ACP bridge and associated commands.
-export ACP_PI_DIR="${PWD}/.pi"
+export ACP_PI_DIR="$(realpath ${SOURCE_DIR}/..)"
 export ACP_PI_BIN_DIR="${ACP_PI_DIR}/bin"
 export ACP_PI_AGENT_DIR="${ACP_PI_DIR}/agent"
 export ACP_PI_SESSION_DIR="${ACP_PI_AGENT_DIR}/sessions"
