@@ -6,14 +6,17 @@
 # @see https://github.com/earendil-works/pi
 ###
 
+set -eu -o pipefail
+
+# shellcheck disable=SC2034
 LOG_GROUP="pi"
 
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
 source "${SOURCE_DIR}/.util/log.sh"
 
 log "PWD: ${PWD}"
-log "ENV: PI_CODING_AGENT_DIR="${PI_CODING_AGENT_DIR}""
-log "ENV: CONTEXT_MODE_DIR="${CONTEXT_MODE_DIR}""
+log "ENV: PI_CODING_AGENT_DIR=\"${PI_CODING_AGENT_DIR}\""
+log "ENV: CONTEXT_MODE_DIR=\"${CONTEXT_MODE_DIR}\""
 
 # Log which node we're using, just to make sure mise is active.
 log "Node path: $(which node)"

@@ -6,6 +6,9 @@
 # @see https://agent-safehouse.dev/
 ###
 
+set -eu -o pipefail
+
+# shellcheck disable=SC2034
 LOG_GROUP="safehouse"
 
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")

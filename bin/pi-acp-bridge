@@ -6,6 +6,9 @@
 # @see https://github.com/svkozak/pi-acp
 ###
 
+set -eu -o pipefail
+
+# shellcheck disable=SC2034
 LOG_GROUP="pi-acp-bridge"
 
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
