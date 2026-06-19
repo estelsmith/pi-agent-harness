@@ -2,45 +2,165 @@
 
 [Random related notes](https://gist.github.com/estelsmith/d1b7dd789567a34ef63965bb292692f8)
 
-This directory contains the `pi` agent harness, designed to provide a robust environment for AI coding agents.
+This directory contains the `pi` agent harness — a self-contained environment for running AI coding agents against
+this project. It wires together [Pi](https://pi.dev/), [pi-acp](https://github.com/svkozak/pi-acp),
+[Safehouse](https://agent-safehouse.dev/), and [oMLX](https://github.com/jundot/omlx) into a single, sandboxed
+pipeline that can be driven by any ACP-compatible client (e.g. JetBrains AI Assistant).
 
-## Overview
+> **Note:** This harness is optimised for macOS.
 
-The `pi` harness is an agent-focused environment that uses the Pi framework to facilitate complex coding tasks. It is
-designed to work seamlessly with local project directories and provides entry scripts to bridge the gap between the
-agent and external AI programming tools (like JetBrains AI Assistant or other ACP-compatible assistants).
+---
 
-**Note:** This harness is optimized for macOS and leverages [oMLX](https://github.com/jundot/omlx) for high-performance
-local inference.
+## Prerequisites
 
-This project is intended to be dropped into a project directory and act as an agent for that project.
+The following tools must be installed and available before using this harness.
+
+| Tool | Purpose | Default location |
+|------|---------|-----------------|
+| [`pi`](https://pi.dev/) | Core agent runtime | `~/npm/bin/pi` |
+| [`pi-acp`](https://github.com/svkozak/pi-acp) | ACP server that wraps `pi` | resolved via `PATH` |
+| [`safehouse`](https://agent-safehouse.dev/) | Sandbox that restricts filesystem access | `~/.homebrew/bin/safehouse` |
+| [`oMLX`](https://github.com/jundot/omlx) | High-performance local LLM inference (macOS) | `http://localhost:11434` |
+
+You can override the default binary paths with environment variables:
+
+```bash
+PI_BIN=/custom/path/to/pi          # overrides ~/npm/bin/pi
+SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
+```
+
+---
+
+## Directory Structure
+
+```
+.pi/
+├── bin/
+│   ├── pi                  # Wrapper: loads pi.env, then runs pi inside safehouse
+│   ├── pi-acp-bridge       # Entry point: starts the ACP server
+│   ├── safehouse           # Wrapper: invokes the safehouse sandbox
+│   └── .util/
+│       └── log.sh          # Shared logging utilities used by all bin scripts
+├── agent/
+│   ├── auth.json           # Local LLM connection credentials (gitignored)
+│   ├── settings.json       # Pi agent settings, installed extensions, default model
+│   ├── sessions/           # Per-session JSONL conversation logs (gitignored)
+│   └── npm/                # Locally installed Pi extensions (gitignored)
+├── logs/                   # ACP session logs (gitignored)
+├── pi.env                  # Environment configuration — must be set up before first use
+└── .gitignore
+```
 
 ### Key Components
 
-- **[pi](https://pi.dev/)**: The core agent harness directory.
-- **`bin/`**: Contains entry point scripts and utilities, including:
-    - `pi-acp-bridge`: The primary entry point for connecting the agent to ACP-compatible environments.
-    - `pi`: A wrapper around the `pi` executable.
-    - [`safehouse`](https://agent-safehouse.dev/): A wrapper around the `safehouse` sandboxing environment used to
-      execute `pi.dev` processes, ensuring they cannot run rampant across the user's machine.
-- **`agent/`**: Contains core agent logic and capabilities as defined by `pi`.
-- **`pi.env`**: Environment configuration for the harness. This file should be configured to point to the absolute path
-  of the directory where this repository is checked out.
+- **`bin/pi-acp-bridge`** — The primary entry point. Configures environment variables, prepends `bin/` to `PATH` so
+  `pi-acp` can find the local `pi` wrapper, prunes stale sessions (>24 h), and starts the `pi-acp` ACP server.
+- **`bin/pi`** — Wraps the `pi` executable. Loads `pi.env`, logs the active configuration, and launches `pi` inside
+  the `safehouse` sandbox.
+- **`bin/safehouse`** — Thin wrapper around the `safehouse` binary. Add any global sandbox options here.
+- **`agent/settings.json`** — Pi runtime settings. Currently installs the
+  [`@monroewilliams/pi-local`](https://github.com/monroewilliams/pi-local) extension and sets the default provider
+  and model.
+- **`agent/auth.json`** — Stores local inference server credentials and cached model metadata. Managed automatically
+  by the `pi-local` extension.
+- **`pi.env`** — Environment file sourced by the `pi` wrapper. Must point `PI_CODING_AGENT_DIR` at the absolute path
+  of the `agent/` directory inside this repository checkout.
 
-## Integration with JetBrains / ACP
+---
 
-The main entry point for external agents is `pi-acp-bridge`. To use this harness with a tool like JetBrains AI
-Assistant, you can configure it via an `acp.json` file.
+## Setup
 
-### Example JetBrains `acp.json` Configuration
+### 1. Configure `pi.env`
+
+`pi.env` is gitignored and must be created manually. Copy the template below and update the path to match your local
+checkout:
+
+```bash
+# .pi/pi.env
+# @see https://pi.dev/docs/latest/usage#environment-variables
+PI_CODING_AGENT_DIR="/absolute/path/to/your/project/.pi/agent"
+```
+
+### 2. Start oMLX
+
+Launch oMLX and ensure it is listening on `http://localhost:11434`. The harness is pre-configured to use
+`gemma-4-26b-a4b-it-4bit` by default; you can change the model via the `/local-model` command inside Pi (see below).
+
+### 3. Configure the ACP client
+
+Point your ACP-compatible client at `bin/pi-acp-bridge`. For JetBrains AI Assistant, add an entry to
+`~/.jetbrains/acp.json`:
 
 ```json
 {
     "default_mcp_settings": {},
     "agent_servers": {
-        "pi-myrepo": {
-            "command": "/path/to/your/project/.pi/bin/pi-acp-bridge"
+        "pi-engage": {
+            "command": "/absolute/path/to/your/project/.pi/bin/pi-acp-bridge"
         }
     }
 }
 ```
+
+---
+
+## Local LLM Management (`pi-local` extension)
+
+The [`@monroewilliams/pi-local`](https://github.com/monroewilliams/pi-local) extension is installed automatically by
+Pi on first run. It lets you manage multiple local inference backends from within the Pi chat interface.
+
+### Supported backends
+
+| Backend | Auto-detection endpoint | Load / Unload |
+|---------|------------------------|---------------|
+| oMLX | `/v1/models/status`, `/api/status` | ✅ |
+| LM Studio | `/api/v1/models` | ✅ |
+| OpenAI-compatible | `/v1/models` | ❌ |
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `/local-login` | Add or remove inference server connections. On macOS, API keys can be stored in the system keychain. |
+| `/local-model` | Switch the active connection and model. Displays server stats, model size, context window, and type. |
+
+Connections are persisted in `agent/auth.json`; the default provider and model are persisted in `agent/settings.json`.
+
+---
+
+## Sandboxing
+
+All `pi` invocations run inside [Safehouse](https://agent-safehouse.dev/), which restricts the agent's filesystem
+access. The `pi` wrapper grants the following read-only paths in addition to Safehouse's defaults:
+
+- `~/npm` — required so the sandbox can reach the `pi` executable.
+
+To grant the agent access to additional paths, edit the `log_exec safehouse ...` call in `bin/pi`.
+
+---
+
+## Logging
+
+Each `pi-acp-bridge` invocation writes a timestamped log file to `logs/` (e.g. `2026-06-18T15-41-19_acp.log`).
+The five most recent log files are kept automatically; older ones are pruned on startup.
+
+Logs capture:
+- Environment variables loaded from `pi.env`
+- Every command executed via `log_exec` and its exit code
+- Session pruning activity
+
+`logs/` is gitignored.
+
+---
+
+## Gitignored Files
+
+The following paths are excluded from version control and must be set up locally:
+
+| Path | Reason |
+|------|--------|
+| `pi.env` | Contains machine-specific absolute paths |
+| `logs/` | Runtime log files |
+| `agent/sessions/` | Per-session conversation history |
+| `agent/npm/` | Locally installed Pi extensions |
+| `agent/auth.json` | LLM credentials and cached model metadata |
