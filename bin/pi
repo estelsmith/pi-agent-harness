@@ -31,6 +31,5 @@ log "NPM version: $(npm --version)"
 log_exec safehouse \
     --env-pass="PI_CODING_AGENT_DIR" \
     --env-pass="CONTEXT_MODE_DIR" \
-    --add-dirs-ro="${HOME}/npm" \
     "${NODE_BIN_DIR}/pi" \
     "$@"
