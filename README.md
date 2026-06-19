@@ -4,7 +4,7 @@
 
 This directory contains the `pi` agent harness — a self-contained environment for running AI coding agents against
 this project. It wires together [Pi](https://pi.dev/), [pi-acp](https://github.com/svkozak/pi-acp),
-[Safehouse](https://agent-safehouse.dev/), and [oMLX](https://github.com/jundot/omlx) into a single, sandboxed
+[Safehouse](https://agent-safehouse.dev/), and [oMLX](https://omlx.ai/) into a single, sandboxed
 pipeline that can be driven by any ACP-compatible client (e.g. JetBrains AI Assistant). Local dependency management is handled by [Mise](https://mise.en.dev/).
 
 > **Note:** This harness is optimised for macOS.
@@ -18,7 +18,7 @@ The following tools must be installed and available before using this harness.
 | Tool | Purpose                                                          | Default location |
 |------|------------------------------------------------------------------|-----------------|
 | [`mise`](https://mise.en.dev/) | Manages local dependencies for `node`, `npm`, `pi`, and `pi-acp` | resolved via `PATH` |
-| [`oMLX`](https://github.com/jundot/omlx) | High-performance local LLM inference (macOS)                     | `http://localhost:11434` |
+| [`oMLX`](https://omlx.ai/) | High-performance local LLM inference (macOS)                     | `http://localhost:11434` |
 
 ---
 
@@ -30,7 +30,7 @@ This harness integrates several specialized tools to provide a robust environmen
 - **[Pi](https://pi.dev/)** — The core agent runtime (managed via Mise/npm).
 - **[pi-acp](https://github.com/svkozak/pi-acp)** — An ACP server that wraps `pi` (managed via Mise/npm).
 - **[Safehouse](https://agent-safehouse.dev/)** — A sandbox that restricts filesystem and network access.
-- **[oMLX](https://github.com/jundot/omlx)** — High-performance local LLM inference (macOS).
+- **[oMLX](https://omlx.ai/)** — High-performance local LLM inference (macOS).
 - **[pi-local](https://github.com/monroewilliams/pi-local)** — An extension for connecting Pi to oMLX via oMLX native APIs.
 - **[context-mode](https://github.com/mksglu/context-mode)** — An extension for advanced file analysis, indexing, and context management.
 
