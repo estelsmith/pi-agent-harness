@@ -6,21 +6,13 @@
 # @see https://github.com/earendil-works/pi
 ###
 
+LOG_GROUP="pi"
+
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
 source "${SOURCE_DIR}/.util/log.sh"
 
-LOG_GROUP="pi"
-PI_BIN="${NODE_BIN_DIR}/pi"
-
 log "PWD: ${PWD}"
-
-# TODO Move up to pi-acp-bridge to keep vars together?
-export PI_CODING_AGENT_DIR="${ACP_PI_AGENT_DIR}"
 log "ENV: PI_CODING_AGENT_DIR="${PI_CODING_AGENT_DIR}""
-
-# We want context-mode to operate in our local directory instead of dirtying up the global database.
-# TODO Move up to pi-acp-bridge to keep vars together?
-export CONTEXT_MODE_DIR="${ACP_PI_DATA_DIR}/context-mode"
 log "ENV: CONTEXT_MODE_DIR="${CONTEXT_MODE_DIR}""
 
 # Log which node we're using, just to make sure mise is active.
@@ -37,5 +29,5 @@ log_exec safehouse \
     --env-pass="PI_CODING_AGENT_DIR" \
     --env-pass="CONTEXT_MODE_DIR" \
     --add-dirs-ro="${HOME}/npm" \
-    "${PI_BIN}" \
+    "${NODE_BIN_DIR}/pi" \
     "$@"

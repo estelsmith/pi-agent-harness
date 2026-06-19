@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 
 ###
-# Safehouse wrapper to execute Pi with restricted permissions.
-# (!) Pi YOLOs the agent by default. It's up to you to provide safety.
+# Safehouse wrapper to execute Pi with kernel-enforced security boundary.
+# (!) Pi YOLOs the agent by default. It's up to you to provide security.
 # @see https://agent-safehouse.dev/
 ###
+
+LOG_GROUP="safehouse"
 
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
 source "${SOURCE_DIR}/.util/log.sh"
 
-LOG_GROUP="safehouse"
+# TODO Remove in favor of project-local safehouse
 SAFEHOUSE_BIN="${SAFEHOUSE_BIN:-${HOME}/.homebrew/bin/safehouse}"
 
 # (!) Add global safehouse options here.
+# TODO Maybe some sort of config file
 # @see https://agent-safehouse.dev/docs/options.html#options
 log_exec "${SAFEHOUSE_BIN}" "$@"

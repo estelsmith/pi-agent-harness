@@ -65,11 +65,11 @@ log_path() {
 }
 
 ###
-# Make sure the log directory exists so we can write logs to it.
+# Make sure the log directory exists so we can write logs to it. Prune old logs.
 ###
 log_config() {
     mkdir -p "$(log_dir)"
-    
+
     # Keep only the 5 most recent log files per channel to prevent disk bloat.
     # Since filenames are timestamped (e.g., app_2026-06-18T12-18-49.log),
     # alphabetical sorting correctly orders them chronologically.

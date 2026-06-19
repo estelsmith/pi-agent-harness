@@ -6,24 +6,23 @@
 # @see https://github.com/svkozak/pi-acp
 ###
 
+LOG_GROUP="pi-acp-bridge"
+
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
-export APP_DIR="$(realpath ${SOURCE_DIR}/..)"
+APP_DIR="$(realpath ${SOURCE_DIR}/..)"
+# (!) Export LOG_DIR and LOG_CHANNEL so child shells inherit logging configuration.
+export LOG_DIR="${APP_DIR}/logs"
+export LOG_CHANNEL="acp"
 
 # TODO Probably import the whole directory through a bootstrap file?
 source "${SOURCE_DIR}/.util/log.sh"
 
-# Define file paths for the ACP bridge and associated commands.
-# (!) Used by pi to define context-mode directory
-export ACP_PI_DATA_DIR="${APP_DIR}/.data"
-# (!) Used by pi to define pi's PI_CODING_AGENT_DIR
-export ACP_PI_AGENT_DIR="${APP_DIR}/agent"
-
-# Configure logging for the session.
-LOG_GROUP="pi-acp-bridge"
-# (!) Export LOG_DIR and LOG_CHANNEL so child shells inherit logging configuration.
-export LOG_DIR="${APP_DIR}/logs"
-export LOG_CHANNEL="acp"
+# Configure logging.
 log_config
+
+# Define file paths for the ACP bridge and associated commands.
+ACP_PI_DATA_DIR="${APP_DIR}/.data"
+ACP_PI_AGENT_DIR="${APP_DIR}/agent"
 
 # Add the local bin directory to the PATH to ensure pi and safehouse wrappers can be used.
 # (!) pi-acp calls `pi` based on PATH, with no other way to specify path to the executable.
@@ -36,6 +35,10 @@ if [[ -d "${ACP_PI_SESSION_DIR}" ]]; then
     find "${ACP_PI_SESSION_DIR}" -mindepth 1 -maxdepth 1 -mmin +1440 -exec rm -rf {} + || log "WARN: Failed to prune old sessions: ${ACP_PI_SESSION_DIR}"
 fi
 
+# pi and context-mode have their own environment variables to make them load and operate in our local directory. Define
+# them here so vars aren't littered around.
+export PI_CODING_AGENT_DIR="${ACP_PI_AGENT_DIR}"
+export CONTEXT_MODE_DIR="${ACP_PI_DATA_DIR}/context-mode"
 export NODE_BIN_DIR="${APP_DIR}/node_modules/.bin"
 
 # Prefix command with `mise exec` so nodejs gets pinned to mise-defined version.
