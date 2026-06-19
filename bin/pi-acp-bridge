@@ -13,6 +13,7 @@ LOG_GROUP="pi-acp-bridge"
 
 SOURCE_DIR=$(dirname "${BASH_SOURCE[0]}")
 APP_DIR="$(realpath ${SOURCE_DIR}/..)"
+export APP_BIN_DIR="${APP_DIR}/bin"
 # (!) Export LOG_DIR and LOG_CHANNEL so child shells inherit logging configuration.
 export LOG_DIR="${APP_DIR}/logs"
 export LOG_CHANNEL="acp"
@@ -35,7 +36,7 @@ ACP_PI_AGENT_DIR="${APP_DIR}/agent"
 
 # Add the local bin directory to the PATH to ensure pi and safehouse wrappers can be used.
 # (!) pi-acp calls `pi` based on PATH, with no other way to specify path to the executable.
-export PATH="${APP_DIR}/bin:${PATH}"
+export PATH="${APP_BIN_DIR}:${PATH}"
 
 # Remove old Pi sessions (over 24h old) to make sure session log doesn't grow endlessly.
 log "Prune old sessions"

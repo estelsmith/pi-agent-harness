@@ -24,11 +24,15 @@ log "NPM path: $(which npm)"
 log "Node version: $(node --version)"
 log "NPM version: $(npm --version)"
 
+# Safehouse wrapper to execute Pi with kernel-enforced security boundary.
+# (!) Pi YOLOs the agent by default. It's up to you to provide security.
+# @see https://agent-safehouse.dev/
+#
 # (!) Add Pi-specific safehouse options here.
 # --env-pass="PI_CODING_AGENT_DIR" Tells Pi to load its configuration from the agent harness directory
 # --env-pass="CONTEXT_MODE_DIR" Forward context-mode directory config so it knows where to store its database
 # --add-dirs-ro="${HOME}/npm" Required to access pi executable in the first place
-log_exec safehouse \
+log_exec "${APP_BIN_DIR}/.vendor/safehouse.sh" \
     --env-pass="PI_CODING_AGENT_DIR" \
     --env-pass="CONTEXT_MODE_DIR" \
     "${NODE_BIN_DIR}/pi" \
