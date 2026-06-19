@@ -23,6 +23,12 @@ source "${SOURCE_DIR}/.util/log.sh"
 # Configure logging.
 log_config
 
+# Check for node_modules in the project root.
+if [[ ! -d "${APP_DIR}/node_modules" ]]; then
+    log "node_modules not found. Installing dependencies..."
+    mise exec -- npm install --ignore-scripts
+fi
+
 # Define file paths for the ACP bridge and associated commands.
 ACP_PI_DATA_DIR="${APP_DIR}/.data"
 ACP_PI_AGENT_DIR="${APP_DIR}/agent"
