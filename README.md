@@ -34,20 +34,20 @@ SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
 ## Directory Structure
 
 ```
-.pi/
-├── bin/
-│   ├── pi                  # Wrapper: runs pi inside safehouse
-│   ├── pi-acp-bridge       # Entry point: starts the ACP server
-│   ├── safehouse           # Wrapper: invokes the safehouse sandbox
-│   └── .util/
-│       └── log.sh          # Shared logging utilities used by all bin scripts
-├── agent/
-│   ├── auth.json           # Local LLM connection credentials
-│   ├── settings.json       # Pi agent settings, installed extensions, default model
-│   ├── sessions/           # Per-session JSONL conversation logs (gitignored)
-│   └── npm/                # Locally installed Pi extensions (gitignored)
-├── logs/                   # ACP session logs (gitignored)
-├── .gitignore
+bin/
+├── pi                  # Wrapper: runs pi inside safehouse
+├── pi-acp-bridge       # Entry point: starts the ACP server
+├── safehouse           # Wrapper: invokes the safehouse sandbox
+└── .util/
+    └── log.sh          # Shared logging utilities used by all bin scripts
+agent/
+├── auth.json           # Local LLM connection credentials. Managed automatically
+│   │               │   # by the `pi-local` extension.
+├── settings.json       # Pi agent settings, installed extensions, default model
+├── sessions/           # Per-session JSONL conversation logs (gitignored)
+└── npm/                # Locally installed Pi extensions (gitignored)
+logs/                   # ACP session logs (gitignored)
+.gitignore
 ```
 
 ### Key Components
