@@ -2,6 +2,7 @@
 /agent/bin/
 /agent/npm/
 /agent/sessions/
+/node_modules/
 
 # Agent-local data storage. Used for storing context-mode database, etc.
 /.data/

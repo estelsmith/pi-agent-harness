@@ -33,4 +33,7 @@ if [[ -d "${ACP_PI_SESSION_DIR}" ]]; then
     find "${ACP_PI_SESSION_DIR}" -mindepth 1 -maxdepth 1 -mmin +1440 -exec rm -rf {} + || log "WARN: Failed to prune old sessions: ${ACP_PI_SESSION_DIR}"
 fi
 
-log_exec pi-acp
+export NODE_BIN_DIR="${ACP_PI_DIR}/node_modules/.bin"
+
+# Prefix command with `mise exec` so nodejs gets pinned to mise-defined version.
+log_exec mise exec -- "${NODE_BIN_DIR}/pi-acp"
