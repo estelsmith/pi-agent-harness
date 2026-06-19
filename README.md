@@ -36,7 +36,7 @@ SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
 ```
 .pi/
 ├── bin/
-│   ├── pi                  # Wrapper: loads pi.env, then runs pi inside safehouse
+│   ├── pi                  # Wrapper: runs pi inside safehouse
 │   ├── pi-acp-bridge       # Entry point: starts the ACP server
 │   ├── safehouse           # Wrapper: invokes the safehouse sandbox
 │   └── .util/
@@ -47,38 +47,33 @@ SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
 │   ├── sessions/           # Per-session JSONL conversation logs (gitignored)
 │   └── npm/                # Locally installed Pi extensions (gitignored)
 ├── logs/                   # ACP session logs (gitignored)
-├── pi.env                  # Environment configuration — must be set up before first use
-└── .gitignore
+├── .gitignore
 ```
 
 ### Key Components
 
 - **`bin/pi-acp-bridge`** — The primary entry point. Configures environment variables, prepends `bin/` to `PATH` so
   `pi-acp` can find the local `pi` wrapper, prunes stale sessions (>24 h), and starts the `pi-acp` ACP server.
-- **`bin/pi`** — Wraps the `pi` executable. Loads `pi.env`, logs the active configuration, and launches `pi` inside
+- **`bin/pi`** — Wraps the `pi` executable. Logs the active configuration, and launches `pi` inside
   the `safehouse` sandbox.
 - **`bin/safehouse`** — Thin wrapper around the `safehouse` binary. Add any global sandbox options here.
 - **`agent/settings.json`** — Pi runtime settings. Currently installs the
   [`@monroewilliams/pi-local`](https://github.com/monroewilliams/pi-local) extension and sets the default provider
   and model.
-- **`agent/auth.json`** — Stores local inference server credentials and cached model metadata. Managed automatically
+- **`agent/auth.json`** — Stores local LLM connection credentials (gitignored). Managed automatically
   by the `pi-local` extension.
-- **`pi.env`** — Environment file sourced by the `pi` wrapper. Must point `PI_CODING_AGENT_DIR` at the absolute path
-  of the `agent/` directory inside this repository checkout.
 
 ---
 
 ## Setup
 
-### 1. Configure `pi.env`
+### 1. Configure the environment
 
-`pi.env` is gitignored and must be created manually. Copy the template below and update the path to match your local
-checkout:
+If you need to override the default binary paths for the harness, use the following environment variables:
 
 ```bash
-# .pi/pi.env
-# @see https://pi.dev/docs/latest/usage#environment-variables
-PI_CODING_AGENT_DIR="/absolute/path/to/your/project/.pi/agent"
+PI_BIN=/custom/path/to/pi          # overrides ~/npm/bin/pi
+SAFEHOUSE_BIN=/custom/path/to/safehouse  # overrides ~/.homebrew/bin/safehouse
 ```
 
 ### 2. Start oMLX
@@ -159,7 +154,6 @@ The following paths are excluded from version control and must be set up locally
 
 | Path | Reason |
 |------|--------|
-| `pi.env` | Contains machine-specific absolute paths |
 | `logs/` | Runtime log files |
 | `agent/sessions/` | Per-session conversation history |
 | `agent/npm/` | Locally installed Pi extensions |
