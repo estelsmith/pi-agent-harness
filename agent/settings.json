@@ -2,8 +2,7 @@
   "lastChangelogVersion": "0.79.8",
   "theme": "dark",
   "packages": [
-    "npm:@monroewilliams/pi-local",
-    "npm:context-mode"
+    "npm:@monroewilliams/pi-local"
   ],
   "defaultProvider": "http://localhost:11434",
   "defaultModel": "gemma-4-26b-a4b-it-4bit"
