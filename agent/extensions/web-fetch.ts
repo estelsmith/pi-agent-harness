@@ -5,7 +5,7 @@ export default function (pi: ExtensionAPI) {
     pi.registerTool({
         name: 'web_fetch',
         label: 'Web Fetch',
-        description: 'Fetch content from a URL',
+        description: 'Fetch content from a URL. If a specific URL is not provided by the user, prioritize using API endpoints whenever possible.',
         parameters: Type.Object({
             method: Type.Optional(Type.String({
                 description: 'HTTP method (e.g., GET, POST)',
