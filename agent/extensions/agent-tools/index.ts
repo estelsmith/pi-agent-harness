@@ -3,9 +3,9 @@ import { Type } from 'typebox';
 
 export default function (pi: ExtensionAPI) {
     pi.registerTool({
-        name: 'web-fetch',
-        label: 'Web Fetch',
-        description: 'Fetch content from a URL.',
+        name: 'fetch-url',
+        label: 'Fetch URL',
+        description: 'Fetch web content from a URL.',
         parameters: Type.Object({
             method: Type.Optional(Type.String({
                 description: 'HTTP method (e.g., GET, POST)',
