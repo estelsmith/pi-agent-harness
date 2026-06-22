@@ -3,9 +3,9 @@ import { Type } from 'typebox';
 
 export default function (pi: ExtensionAPI) {
     pi.registerTool({
-        name: 'web_fetch',
+        name: 'web-fetch',
         label: 'Web Fetch',
-        description: 'Fetch content from a URL. If a specific URL is not provided by the user, prioritize using API endpoints whenever possible.',
+        description: 'Fetch content from a URL.',
         parameters: Type.Object({
             method: Type.Optional(Type.String({
                 description: 'HTTP method (e.g., GET, POST)',
@@ -27,10 +27,18 @@ export default function (pi: ExtensionAPI) {
                     };
                 }
 
-                const text = await response.text();
+                const contentType = response.headers.get('content-type');
+                let content: string;
+
+                if (contentType && contentType.includes('application/json')) {
+                    const json = await response.json();
+                    content = JSON.stringify(json, null, 2);
+                } else {
+                    content = await response.text();
+                }
 
                 return {
-                    content: [{ type: 'text', text }],
+                    content: [{ type: 'text', text: content }],
                     details: {
                         status: response.status,
                         headers: Object.fromEntries(response.headers.entries()),
