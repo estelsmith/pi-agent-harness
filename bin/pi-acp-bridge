@@ -48,7 +48,6 @@ fi
 # pi and context-mode have their own environment variables to make them load and operate in our local directory. Define
 # them here so vars aren't littered around.
 export PI_CODING_AGENT_DIR="${ACP_PI_AGENT_DIR}"
-export CONTEXT_MODE_DIR="${ACP_PI_DATA_DIR}/context-mode"
 export NODE_BIN_DIR="${APP_DIR}/node_modules/.bin"
 
 # Prefix command with `mise exec` so nodejs gets pinned to mise-defined version.
