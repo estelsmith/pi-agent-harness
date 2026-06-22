@@ -21,10 +21,7 @@ export default function (pi: ExtensionAPI) {
                 });
 
                 if (!response.ok) {
-                    return {
-                        content: [{ type: 'text', text: `Error: ${response.status} ${response.statusText}` }],
-                        details: {},
-                    };
+                    throw new Error(`${response.status} ${response.statusText}`);
                 }
 
                 const contentType = response.headers.get('content-type');
@@ -46,6 +43,7 @@ export default function (pi: ExtensionAPI) {
                 };
             } catch (error: any) {
                 return {
+                    isError: true,
                     content: [{ type: 'text', text: `Error: ${error.message}` }],
                     details: {},
                 };
