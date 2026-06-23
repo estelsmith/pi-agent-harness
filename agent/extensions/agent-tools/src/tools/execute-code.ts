@@ -6,12 +6,14 @@ function register(pi: ExtensionAPI) {
     /**
      * Disable the bash tool before the agent starts, forcing the agent to use provided tools to perform its work.
      */
+    /*
     pi.on('before_agent_start', () => {
         const toolsToDisable = ['bash'];
         const activeTools = pi.getActiveTools();
         const toolsMinusDisabled = activeTools.filter((i) => !toolsToDisable.includes(i));
         pi.setActiveTools(toolsMinusDisabled);
     });
+    */
 
     pi.registerTool({
         name: 'execute-code',
