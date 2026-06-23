@@ -22,14 +22,22 @@ function register(pi: ExtensionAPI) {
         }),
         async execute(toolCallId, params, signal, onUpdate, ctx) {
             const { code } = params;
-            const contextObject: Record<string, any> = {};
+            const contextObject: Record<string, any> = {
+                fetch: global.fetch,
+                JSON: global.JSON,
+            };
 
             try {
                 const contextifiedObject = vm.createContext(contextObject);
-                // Wrap code in IIFE so `return` can be used to return results.
-                const wrappedCode = `(() => {${code}})();`;
+                // Wrap code in an async IIFE so `await` and `return` can be used.
+                const wrappedCode = `(async () => {${code}})();`;
                 const script = new vm.Script(wrappedCode);
-                const result = script.runInContext(contextifiedObject, { timeout: 15_000 });
+                let result = script.runInContext(contextifiedObject, { timeout: 15_000 });
+
+                // If the result is a promise (from the async IIFE), await it.
+                if (result && typeof result.then === 'function') {
+                    result = await result;
+                }
 
                 const resultText = result !== undefined ? JSON.stringify(result, null, 2) : '';
 
