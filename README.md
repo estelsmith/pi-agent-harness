@@ -32,7 +32,6 @@ This harness integrates several specialized tools to provide a robust environmen
 - **[Agent Safehouse](https://agent-safehouse.dev/)** — A sandbox that restricts filesystem and network access.
 - **[oMLX](https://omlx.ai/)** — High-performance local LLM inference (macOS).
 - **[pi-local](https://github.com/monroewilliams/pi-local)** — An extension for connecting Pi to oMLX via oMLX native APIs.
-- **[context-mode](https://context-mode.com/)** — An extension for advanced file analysis, indexing, and context management.
 
 ---
 
