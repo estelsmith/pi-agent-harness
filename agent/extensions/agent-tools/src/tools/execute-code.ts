@@ -16,9 +16,9 @@ function register(pi: ExtensionAPI) {
     pi.registerTool({
         name: 'execute-code',
         label: 'Execute Code',
-        description: 'Run JavaScript code in a sandboxed environment. Use a self-invoking function and then `return` to send back the execution results.',
+        description: 'Run JavaScript code in a sandboxed environment. You MUST use `return` to return results.',
         parameters: Type.Object({
-            code: Type.String({ description: 'The JavaScript code to execute.' }),
+            code: Type.String({ description: 'The JavaScript code to execute. The code will be wrapped in a self-invoking function.' }),
         }),
         async execute(toolCallId, params, signal, onUpdate, ctx) {
             const { code } = params;
@@ -26,7 +26,9 @@ function register(pi: ExtensionAPI) {
 
             try {
                 const contextifiedObject = vm.createContext(contextObject);
-                const script = new vm.Script(code);
+                // Wrap code in IIFE so `return` can be used to return results.
+                const wrappedCode = `(() => {${code}})();`;
+                const script = new vm.Script(wrappedCode);
                 const result = script.runInContext(contextifiedObject, { timeout: 15_000 });
 
                 const resultText = result !== undefined ? JSON.stringify(result, null, 2) : '';
