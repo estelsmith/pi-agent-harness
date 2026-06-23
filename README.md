@@ -47,9 +47,9 @@ bin/
     └── log.sh          # Shared logging utilities used by all bin scripts
 agent/
 ├── auth.json           # Local LLM connection credentials. Managed automatically
-│   │               │   # by the `pi-local` extension.
-├── extensions/         # Custom Pi extensions
+│   │                   # by the `pi-local` extension.
 ├── settings.json       # Pi agent settings, installed extensions, default model
+├── extensions/         # Custom Pi extensions
 ├── sessions/           # Per-session JSONL conversation logs (gitignored)
 └── npm/                # Locally installed Pi extensions (gitignored)
 logs/                   # ACP session logs (gitignored)
