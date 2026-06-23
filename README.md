@@ -65,6 +65,14 @@ logs/                   # ACP session logs (gitignored)
 - **`agent/auth.json`** — Stores local LLM connection credentials. Managed automatically
   by the `pi-local` extension.
 
+## Extensions
+
+### agent-tools
+Located at `agent/extensions/agent-tools/`, this extension provides specialized tools for the agent:
+- `fetch-url`: Allows the agent to fetch content from a web URL.
+- `execute-code`: Allows the agent to run JavaScript code in a sandboxed environment. This tool provides network access
+  via `fetch` and access to `JSON`, but the sandbox restricts all other activities.
+
 ---
 
 ## Setup
