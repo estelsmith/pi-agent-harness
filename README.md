@@ -48,6 +48,7 @@ bin/
 agent/
 ├── auth.json           # Local LLM connection credentials. Managed automatically
 │   │               │   # by the `pi-local` extension.
+├── extensions/         # Custom Pi extensions
 ├── settings.json       # Pi agent settings, installed extensions, default model
 ├── sessions/           # Per-session JSONL conversation logs (gitignored)
 └── npm/                # Locally installed Pi extensions (gitignored)
@@ -64,10 +65,13 @@ logs/                   # ACP session logs (gitignored)
 - **`agent/settings.json`** — Pi runtime settings. Installs extensions, and sets the default provider and model.
 - **`agent/auth.json`** — Stores local LLM connection credentials. Managed automatically
   by the `pi-local` extension.
+- **`agent/extensions/`** — Directory containing custom Pi extensions.
 
 ## Extensions
 
-### agent-tools
+### Custom extensions
+
+#### agent-tools
 Located at `agent/extensions/agent-tools/`, this extension provides specialized tools for the agent:
 - `fetch-url`: Allows the agent to fetch content from a web URL.
 - `execute-code`: Allows the agent to run JavaScript code in a sandboxed environment. This tool provides network access
